@@ -1,4 +1,4 @@
-OBJ = firmware.o
+OBJ = crt.o firmware.o
 
 PYMCUPROG = pymcuprog -d attiny414 -t uart -u /dev/ttyUSB0
 CC = avr-gcc -mmcu=attiny414
@@ -14,21 +14,19 @@ ping:
 	$(PYMCUPROG) ping
 
 flash: firmware.hex
-	$(PYMCUPROG) write -f firmware.hex
+	$(PYMCUPROG) write -f firmware.hex --verify --erase
 
-.SUFFIXES: .c .S .o .elf .asm .hex
+.SUFFIXES: .c .S .o .elf .hex
 
 firmware.elf: $(OBJ)
-	$(CC) $(LDFLAGS) -Wl,-Map=firmware.map -Wl,--gc-sections -nostdlib -o $@ $(OBJ) $(LIBS)
+	$(CC) $(LDFLAGS) -Wl,-Map=firmware.map,-Tattiny414.ld,--gc-sections -nostdlib -o $@ $(OBJ) $(LIBS)
+	$(OBJDUMP) -z -D $@ >$*.asm
 
 .c.o:
 	$(CC) $(CFLAGS) -ffunction-sections -fdata-sections -c -o $@ $<
 
 .S.o:
 	$(CC) $(CFLAGS) -D__ASSEMBLY__ -c -o $@ $<
-
-.elf.asm:
-	$(OBJDUMP) -z -D $< >$@
 
 .elf.hex:
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@

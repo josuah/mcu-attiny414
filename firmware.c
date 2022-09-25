@@ -1,9 +1,13 @@
 #include "attiny414.h"
 
-int main(void) {
+uint8_t global = 0xFF;
+
+int main(void)
+{
+    PORTA->DIR |= 0xFF;
     for (;;) {
-        PORTA->DIRSET = 0xFF;
-        PORTA->OUTSET = 0xFF;
+        PORTA->OUT = global;
+        PORTA->OUT = 0x00;
     }
     return 0;
 }

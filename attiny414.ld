@@ -1,6 +1,6 @@
 MEMORY {
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 32K
-	SRAM (rwx) : ORIGIN = 0x00800100, LENGTH = 2K
+	FLASH (rx)	: ORIGIN = 0x0000, LENGTH = 32K
+	SRAM (rwx)	: ORIGIN = 0x803F00, LENGTH = 256
 }
 
 ENTRY(__reset_handler)
