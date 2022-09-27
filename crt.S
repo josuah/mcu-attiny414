@@ -1,7 +1,7 @@
 #define zero r1
 
-
 .section .vectors
+
 .global __vectors
 
 __vectors:
@@ -22,16 +22,9 @@ __vectors:
 	jmp __null_handler ;
 	jmp __null_handler ;
 
-
 .section .text
-.global	__reset_handler
-.global	__null_handler
-.global	__stop_program
 
-__null_handler:
-__stop_program:
- 0:
- 	rjmp 0b
+.global	__reset_handler
 
 __reset_handler:
 	clr zero
@@ -48,7 +41,6 @@ __copy_data:
 	lpm r0, Z+
 	st X+, r0
  1:
-	; done yet?
 	cpi XL, lo8(__data_end)
 	brne 0b
 	cpi XH, hi8(__data_end)
@@ -60,10 +52,8 @@ __clear_bss:
 
 	rjmp 1f
  0:
-	/* fill the stack with one more 0 */
 	st Z+, zero
  1:
-	/* done yet? */
 	cpi ZL, lo8(__bss_end)
 	brne 0b
 	cpi ZH, hi8(__bss_end)
@@ -71,5 +61,24 @@ __clear_bss:
 
 __call_main:
 	call main
+
+
+.global	__null_handler
+.global	__stop_program
+
+__null_handler:
+__stop_program:
  0:
 	rjmp 0b
+
+.global __sei
+
+__sei:
+    sei
+    ret
+
+.global __cli
+
+__cli:
+    cli
+    ret

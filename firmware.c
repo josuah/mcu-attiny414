@@ -1,13 +1,17 @@
 #include "attiny414.h"
 
-uint8_t global = 0xFF;
+#define PIN 1
 
 int main(void)
 {
-    PORTA->DIR |= 0xFF;
+    // Test to export the clock.
+    CLKCTRL->MCLKCTRLA |= CLKCTRL_MCLKCTRLA_CLKOUT;
+
+    __sei();
+    PORTA->DIRSET |= 1u << PIN;
     for (;;) {
-        PORTA->OUT = global;
-        PORTA->OUT = 0x00;
+        PORTA->OUTSET = 1u << PIN;
+        PORTA->OUTCLR = 1u << PIN;
     }
     return 0;
 }
