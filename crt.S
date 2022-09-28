@@ -8,37 +8,16 @@ __vector_\name:
     in r1, SREG
     push zero
     clr zero
-    push r18
-    push r19
-    push r20
-    push r21
-    push r22
-    push r23
-    push r24
-    push r25
-    push r26
-    push r27
-    push r30
-    push r31
+    push r18 $ push r19 $ push r20 $ push r21 $ push r22 $ push r23
+    push r24 $ push r25 $ push r26 $ push r27 $ push r30 $ push r31
     call __interrupt_\name
-    pop r31
-    pop r30
-    pop r27
-    pop r26
-    pop r25
-    pop r24
-    pop r23
-    pop r22
-    pop r21
-    pop r20
-    pop r19
-    pop r18
+    pop r31 $ pop r30 $ pop r27 $ pop r26 $ pop r25 $ pop r24
+    pop r23 $ pop r22 $ pop r21 $ pop r20 $ pop r19 $ pop r18
     pop r1
     out SREG, r1
     pop r1
     reti
 .endm
-
 
 .section .vectors
 
@@ -66,23 +45,19 @@ __vectors:
     rjmp __null_handler              ; 0x13: TWI0_TWIS
     rjmp __null_handler              ; 0x14: TWI0_TWIM
     rjmp __null_handler              ; 0x15: SPI0_INT
-    rjmp __vector_usart0_rxc         ; 0x16: USART0_RXC
+    rjmp __null_handler              ; 0x16: USART0_RXC
     rjmp __vector_usart0_dre         ; 0x17: USART0_DRE
-    rjmp __vector_usart0_txc         ; 0x18: USART0_TXC
+    rjmp __null_handler              ; 0x18: USART0_TXC
     rjmp __null_handler              ; 0x19: NVMCTRL_EE
 
-.interrupt usart0_rxc
 .interrupt usart0_dre
-.interrupt usart0_txc
-
 
 .section .text
 
 .global __reset_handler
 __reset_handler:
     clr zero
-
-__copy_data:
+    ; copy data
     ldi ZL, lo8(__data_load_start)
     ldi ZH, hi8(__data_load_start)
     ldi XL, lo8(__data_start)
@@ -94,8 +69,7 @@ __copy_data:
     brne 0b
     cpi XH, hi8(__data_end)
     brne 0b
-
-__clear_bss:
+    ; clear bss
     ldi ZH, hi8(__bss_start)
     ldi ZL, lo8(__bss_start)
     rjmp 1f
@@ -104,8 +78,7 @@ __clear_bss:
     brne 0b
     cpi ZH, hi8(__bss_end)
     brne 0b
-
-__call_main:
+    ; ready to call C function
     call main
 
 .global __null_handler

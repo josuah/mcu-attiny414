@@ -12,26 +12,15 @@ void tcb_example(void)
      | TCB_CTRLB_CNTMODE_PWM8;
 }
 
-void __interrupt_usart0_txc(void)
-{
-    PORTA->OUT = 0xFF;
-}
-
-void __interrupt_usart0_rxc(void)
-{
-    PORTA->OUT = 0xFF;
-}
-
 void __interrupt_usart0_dre(void)
 {
-    PORTA->OUT = 0xFF;
+    USART0->TXDATAL = '.';
 }
 
 int main(void)
 {
-    PORTA->DIRSET = 0xFF;
-    //PORTA->DIRSET = 1 << PIN_USART_TX;
-    //PORTA->DIRCLR = 1 << PIN_USART_RX;
+    PORTB->DIRSET = 0xFF;
+    //PORTB->DIRCLR = 1 << PIN_USART_RX;
 
     USART0->BAUD = USART0_BAUD_HZ(9600);
     USART0->CTRLA = 0
@@ -45,9 +34,6 @@ int main(void)
     __interrupts_enable();
 
     for (;;) {
-        while (!(USART0->STATUS & USART_STATUS_DREIF));
-        USART0->TXDATAL = 0x55;
-        while (!(USART0->STATUS & USART_STATUS_TXCIF));
     }
 
     return 0;

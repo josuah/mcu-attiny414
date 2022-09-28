@@ -5,8 +5,8 @@
 
 #define PIN_TCB_OUT 5 // PORTA
 
-#define PIN_USART_TX 1 // PORTA
-#define PIN_USART_RX 2 // PORTA
+#define PIN_USART_TX 1 // PORTB
+#define PIN_USART_RX 2 // PORTB
 
 #ifndef CLK_MAIN_KHZ
 #define CLK_MAIN_KHZ 16000
