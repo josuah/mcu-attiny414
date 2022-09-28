@@ -1,84 +1,127 @@
 #define zero r1
+#define SREG 0x3F
+
+.macro .interrupt name
+.global __vector_\name
+__vector_\name:
+    push r1
+    in r1, SREG
+    push zero
+    clr zero
+    push r18
+    push r19
+    push r20
+    push r21
+    push r22
+    push r23
+    push r24
+    push r25
+    push r26
+    push r27
+    push r30
+    push r31
+    call __interrupt_\name
+    pop r31
+    pop r30
+    pop r27
+    pop r26
+    pop r25
+    pop r24
+    pop r23
+    pop r22
+    pop r21
+    pop r20
+    pop r19
+    pop r18
+    pop r1
+    out SREG, r1
+    pop r1
+    reti
+.endm
+
 
 .section .vectors
 
 .global __vectors
-
 __vectors:
-	jmp __reset_handler
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
-	jmp __null_handler ;
+    rjmp __reset_handler             ; 0x00:
+    rjmp __null_handler              ; 0x01: CRCSCAN_NMI
+    rjmp __null_handler              ; 0x02: BOD_VLM
+    rjmp __null_handler              ; 0x03: PORTA_PORT
+    rjmp __null_handler              ; 0x04: PORTB_PORT
+    rjmp __null_handler              ; 0x05: PORTC_PORT
+    rjmp __null_handler              ; 0x06: RTC_CNT
+    rjmp __null_handler              ; 0x07: RTC_PIT
+    rjmp __null_handler              ; 0x08: TCA0_OVF
+    rjmp __null_handler              ; 0x09: TCA0_HUNF
+    rjmp __null_handler              ; 0x0A: TCA0_CMP0
+    rjmp __null_handler              ; 0x0B: TCA0_CMP1
+    rjmp __null_handler              ; 0x0C: TCA0_CMP2
+    rjmp __null_handler              ; 0x0D: TCB0_INT
+    rjmp __null_handler              ; 0x0E: TCD0_OVF
+    rjmp __null_handler              ; 0x0F: TCD0_TRIG
+    rjmp __null_handler              ; 0x10: AC0_AC
+    rjmp __null_handler              ; 0x11: ADC0_RESRDY
+    rjmp __null_handler              ; 0x12: ADC0_WCOMP
+    rjmp __null_handler              ; 0x13: TWI0_TWIS
+    rjmp __null_handler              ; 0x14: TWI0_TWIM
+    rjmp __null_handler              ; 0x15: SPI0_INT
+    rjmp __vector_usart0_rxc         ; 0x16: USART0_RXC
+    rjmp __vector_usart0_dre         ; 0x17: USART0_DRE
+    rjmp __vector_usart0_txc         ; 0x18: USART0_TXC
+    rjmp __null_handler              ; 0x19: NVMCTRL_EE
+
+.interrupt usart0_rxc
+.interrupt usart0_dre
+.interrupt usart0_txc
+
 
 .section .text
 
-.global	__reset_handler
-
+.global __reset_handler
 __reset_handler:
-	clr zero
+    clr zero
 
 __copy_data:
-	ldi ZL, lo8(__data_load_start)
-	ldi ZH, hi8(__data_load_start)
-	ldi XL, lo8(__data_start)
-	ldi XH, hi8(__data_start)
-
-	rjmp 1f
- 0:
-	; Load a byte from Program Memory to the RAM
-	lpm r0, Z+
-	st X+, r0
- 1:
-	cpi XL, lo8(__data_end)
-	brne 0b
-	cpi XH, hi8(__data_end)
-	brne 0b
+    ldi ZL, lo8(__data_load_start)
+    ldi ZH, hi8(__data_load_start)
+    ldi XL, lo8(__data_start)
+    ldi XH, hi8(__data_start)
+    rjmp 1f
+0:  lpm r0, Z+
+    st X+, r0
+1:  cpi XL, lo8(__data_end)
+    brne 0b
+    cpi XH, hi8(__data_end)
+    brne 0b
 
 __clear_bss:
-	ldi ZH, hi8(__bss_start)
-	ldi ZL, lo8(__bss_start)
-
-	rjmp 1f
- 0:
-	st Z+, zero
- 1:
-	cpi ZL, lo8(__bss_end)
-	brne 0b
-	cpi ZH, hi8(__bss_end)
-	brne 0b
+    ldi ZH, hi8(__bss_start)
+    ldi ZL, lo8(__bss_start)
+    rjmp 1f
+0:  st Z+, zero
+1:  cpi ZL, lo8(__bss_end)
+    brne 0b
+    cpi ZH, hi8(__bss_end)
+    brne 0b
 
 __call_main:
-	call main
+    call main
 
-
-.global	__null_handler
-.global	__stop_program
-
+.global __null_handler
 __null_handler:
+0:  rjmp 0b
+
+.global __stop_program
 __stop_program:
- 0:
-	rjmp 0b
+0:  rjmp 0b
 
-.global __sei
-
-__sei:
+.global __interrupts_enable
+__interrupts_enable:
     sei
     ret
 
-.global __cli
-
-__cli:
+.global __interrupts_disable
+__interrupts_disable:
     cli
     ret

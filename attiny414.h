@@ -3,6 +3,8 @@
 #ifndef ATTINY414_H
 #define ATTINY414_H
 
+#define PIN_TCB_OUT 5 // PORTA
+
 #define PIN_USART_TX 1 // PORTA
 #define PIN_USART_RX 2 // PORTA
 
@@ -14,9 +16,9 @@
 #define CLK_PER_KHZ 2666
 #endif
 
-// In crt.S:
-void __sei(void);
-void __clk(void);
+// crt.S
+void __interrupts_enable(void);
+void __interrupts_disable(void);
 
 typedef struct {
     volatile uint8_t DIR;               // 0x00
@@ -35,6 +37,9 @@ typedef struct {
 #define PORTA ((hw_port_t *)0x0400)
 #define PORTB ((hw_port_t *)0x0420)
 #define PORTC ((hw_port_t *)0x0440)
+
+#define USART0 ((hw_usart_t *)0x0800)
+#define USART0_BAUD_HZ(hz) ((float)(3333333 * 64 / (16 * (float)hz)) + 0.5)
 
 typedef struct {
     volatile uint8_t RXDATAL;           // 0x00
@@ -80,7 +85,7 @@ typedef struct {
 #define USART_CTRLC_SBMODE              (0x01u << 3)
 #define USART_CTRLC_CHSIZE_Msk          (0x07u << 0)
 #define USART_CTRLC_CHSIZE_Pos                    0
-    volatile uint8_t BAUD;              // 0x08
+    volatile uint16_t BAUD;             // 0x08
     volatile uint8_t RESERVED0[0x0B - 0x0A];
     volatile uint8_t DBGCTRL;           // 0x0B
 #define USART_DBGCTRL_DBGRUN            (0x01u << 0)
@@ -89,7 +94,7 @@ typedef struct {
     volatile uint8_t TXPLCTRL;          // 0x0D
     volatile uint8_t RXPLCTRL;          // 0x0E
 } hw_usart_t;
-#define USART0 ((hw_usart_t *)0x0800)
+
 
 typedef struct {
     volatile uint8_t MCLKCTRLA;         // 0x00
@@ -168,6 +173,14 @@ typedef struct {
 #define TCB_CTRLB_CCMPEN                (0x01u << 4)
 #define TCB_CTRLB_CNTMODE_Msk           (0x07u << 0)
 #define TCB_CTRLB_CNTMODE_Pos                     0
+#define TCB_CTRLB_CNTMODE_INT           (0x00u << 0)
+#define TCB_CTRLB_CNTMODE_TIMEOUT       (0x01u << 0)
+#define TCB_CTRLB_CNTMODE_CAPT          (0x02u << 0)
+#define TCB_CTRLB_CNTMODE_FRQ           (0x03u << 0)
+#define TCB_CTRLB_CNTMODE_PW            (0x04u << 0)
+#define TCB_CTRLB_CNTMODE_FRQPW         (0x05u << 0)
+#define TCB_CTRLB_CNTMODE_SINGLE        (0x06u << 0)
+#define TCB_CTRLB_CNTMODE_PWM8          (0x07u << 0)
     volatile uint8_t RESERVED0[0x04 - 0x02];
     volatile uint8_t EVCTRL;            // 0x04
 #define TCB_EVCTRL_FILTER               (0x01u << 6)
@@ -186,5 +199,19 @@ typedef struct {
     volatile uint16_t CCMP;             // 0x0C
 } hw_tcb_t;
 #define TCB0 ((hw_tcb_t *)0x0A40)
+
+typedef struct {
+    volatile uint8_t CTRLA;             // 0x00
+#define CPUINT_CTRLA_IVSEL              (0x01u << 6)
+#define CPUINT_CTRLA_CVT                (0x01u << 5)
+#define CPUINT_CTRLA_LVL0RR             (0x01u << 0)
+    volatile uint8_t STATUS;            // 0x01
+#define CPUINT_STATUS_NMIEX             (0x01u << 7)
+#define CPUINT_STATUS_LVL1EX            (0x01u << 1)
+#define CPUINT_STATUS_LVL0EX            (0x01u << 0)
+    volatile uint8_t LVL0PRI;           // 0x02
+    volatile uint8_t LVL1VEC;           // 0x03
+} hw_cpuint_t;
+#define CPUINT ((hw_cpuint_t *)0x0110)
 
 #endif
