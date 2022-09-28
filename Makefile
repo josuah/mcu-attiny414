@@ -1,4 +1,10 @@
-OBJ = crt.o firmware.o attiny_usart.o
+CFLAGS += -Wall -Wextra -std=c99
+
+OBJ += firmware.o
+OBJ += attiny_crt.o
+OBJ += attiny_usart.o
+OBJ += attiny_adc.o
+LIBS += -lgcc -lc
 
 PYMCUPROG = pymcuprog -d attiny414 -t uart -u /dev/ttyUSB0
 CC = avr-gcc -mmcu=attiny414

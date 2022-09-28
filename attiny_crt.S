@@ -40,7 +40,7 @@ __vectors:
     rjmp __null_handler              ; 0x0E: TCD0_OVF
     rjmp __null_handler              ; 0x0F: TCD0_TRIG
     rjmp __null_handler              ; 0x10: AC0_AC
-    rjmp __null_handler              ; 0x11: ADC0_RESRDY
+    rjmp __vector_adc0_resrdy        ; 0x11: ADC0_RESRDY
     rjmp __null_handler              ; 0x12: ADC0_WCOMP
     rjmp __null_handler              ; 0x13: TWI0_TWIS
     rjmp __null_handler              ; 0x14: TWI0_TWIM
@@ -50,6 +50,7 @@ __vectors:
     rjmp __null_handler              ; 0x18: USART0_TXC
     rjmp __null_handler              ; 0x19: NVMCTRL_EE
 
+.interrupt adc0_resrdy
 .interrupt usart0_dre
 
 .section .text
@@ -86,8 +87,8 @@ __reset_handler:
 __null_handler:
 0:  rjmp 0b
 
-.global __stop_program
-__stop_program:
+.global _exit
+_exit:
 0:  rjmp 0b
 
 .global __interrupts_enable

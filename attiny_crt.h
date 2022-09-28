@@ -1,3 +1,3 @@
-void __interrupts_enable();
-void __interrupts_disable();
-void __stop_program();
+void __interrupts_enable(void);
+void __interrupts_disable(void);
+void _exit(int unused);

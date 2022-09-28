@@ -2,10 +2,9 @@
 #define ATTINY_USART_H
 #include <stdint.h>
 #include <stddef.h>
+#include "attiny_config.h"
 
 #define USART0 ((hw_usart_t *)0x0800)
-
-#define USART_BAUD_HZ(hz) ((float)(3333333 * 64 / (16 * (float)hz)) + 0.5)
 
 typedef struct {
     volatile uint8_t RXDATAL;           // 0x00
@@ -61,7 +60,10 @@ typedef struct {
     volatile uint8_t RXPLCTRL;          // 0x0E
 } hw_usart_t;
 
+#define USART_BAUD_HZ(hz) ((float)(3333333 * 64 / (16 * (float)hz)) + 0.5)
+
+void usart0_write(uint8_t const *buf, size_t len);
 void usart0_init(void);
-void usart0_write(uint8_t *buf, size_t sz);
+
 
 #endif
