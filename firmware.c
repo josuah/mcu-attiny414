@@ -1,8 +1,11 @@
-#include "attiny414.h"
+#include "attiny_crt.h"
+#include "attiny_usart.h"
+#include "attiny_port.h"
+#include "attiny_tcb.h"
 
 void tcb_example(void)
 {
-    PORTA->DIRSET = 1 << PIN_TCB_OUT;
+    PORTA->DIRSET = 0xFF;
 
     TCB0->CCMP = 0x80FF;
     TCB0->CTRLA = 0
@@ -12,28 +15,15 @@ void tcb_example(void)
      | TCB_CTRLB_CNTMODE_PWM8;
 }
 
-void __interrupt_usart0_dre(void)
-{
-    USART0->TXDATAL = '.';
-}
-
 int main(void)
 {
     PORTB->DIRSET = 0xFF;
-    //PORTB->DIRCLR = 1 << PIN_USART_RX;
-
-    USART0->BAUD = USART0_BAUD_HZ(9600);
-    USART0->CTRLA = 0
-     | USART_CTRLA_RXCIE
-     | USART_CTRLA_TXCIE
-     | USART_CTRLA_DREIE;
-    USART0->CTRLB = 0
-     | USART_CTRLB_TXEN
-     | USART_CTRLB_RXEN;
+    usart0_init();
 
     __interrupts_enable();
 
     for (;;) {
+        usart0_write((uint8_t *)" test", 5);
     }
 
     return 0;

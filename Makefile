@@ -1,4 +1,4 @@
-OBJ = crt.o firmware.o
+OBJ = crt.o firmware.o attiny_usart.o
 
 PYMCUPROG = pymcuprog -d attiny414 -t uart -u /dev/ttyUSB0
 CC = avr-gcc -mmcu=attiny414

@@ -80,6 +80,7 @@ __reset_handler:
     brne 0b
     ; ready to call C function
     call main
+0:  rjmp 0b
 
 .global __null_handler
 __null_handler:
