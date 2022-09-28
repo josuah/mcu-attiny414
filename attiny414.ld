@@ -10,12 +10,12 @@ SECTIONS {
 		KEEP(*(.vectors))
 		. = ALIGN(4);
 		*(.text .text.*)
-		*(.rodata .rodata.*)
 	} >FLASH
 
 	.data : {
 		PROVIDE(__data_start = .);
 		*(.data .data.*)
+		*(.rodata .rodata.*)
 		PROVIDE(__data_end = .);
 	} >SRAM AT >FLASH
 
