@@ -55,8 +55,6 @@ typedef struct {
 } hw_adc_t;
 
 void adc0_init(void);
-void adc0_start(void);
 uint16_t adc0_read(void);
-
 
 #endif

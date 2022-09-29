@@ -12,20 +12,16 @@ void adc0_init(void)
      | ADC_CTRLA_ENABLE;
 }
 
+uint16_t adc0_read(void)
+{
+    adc0_done = 0;
+    ADC0->COMMAND = ADC_COMMAND_STCONV;
+    while (!adc0_done);
+    return adc0_result;
+}
+
 void __interrupt_adc0_resrdy(void)
 {
     adc0_result = ADC0->RES;
     adc0_done = 1;
-}
-
-void adc0_start(void)
-{
-    adc0_done = 0;
-    ADC0->COMMAND = ADC_COMMAND_STCONV;
-}
-
-uint16_t adc0_read(void)
-{
-    while (!adc0_done);
-    return adc0_result;
 }

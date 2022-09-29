@@ -1,21 +1,23 @@
-#define zero r1
-#define SREG 0x3F
+#define zero        r1
+#define SPL         0x3D
+#define SPH         0x3E
+#define SREG        0x3F
 
 .macro .interrupt name
 .global __vector_\name
 __vector_\name:
-    push r1
-    in r1, SREG
-    push zero
-    clr zero
+    push    r1
+    in      r1, SREG
+    push    zero
+    clr     zero
     push r18 $ push r19 $ push r20 $ push r21 $ push r22 $ push r23
     push r24 $ push r25 $ push r26 $ push r27 $ push r30 $ push r31
-    call __interrupt_\name
+    call    __interrupt_\name
     pop r31 $ pop r30 $ pop r27 $ pop r26 $ pop r25 $ pop r24
     pop r23 $ pop r22 $ pop r21 $ pop r20 $ pop r19 $ pop r18
-    pop r1
-    out SREG, r1
-    pop r1
+    pop     r1
+    out     SREG, r1
+    pop     r1
     reti
 .endm
 
@@ -57,39 +59,39 @@ __vectors:
 
 .global __reset_handler
 __reset_handler:
-    clr zero
+    clr     zero
     ; copy data
-    ldi ZL, lo8(__data_load_start)
-    ldi ZH, hi8(__data_load_start)
-    ldi XL, lo8(__data_start)
-    ldi XH, hi8(__data_start)
-    rjmp 1f
-0:  lpm r0, Z+
-    st X+, r0
-1:  cpi XL, lo8(__data_end)
-    brne 0b
-    cpi XH, hi8(__data_end)
-    brne 0b
+    ldi     ZL, lo8(__data_load_start)
+    ldi     ZH, hi8(__data_load_start)
+    ldi     XL, lo8(__data_start)
+    ldi     XH, hi8(__data_start)
+    rjmp    1f
+0:  lpm     r0, Z+
+    st      X+, r0
+1:  cpi     XL, lo8(__data_end)
+    brne    0b
+    cpi     XH, hi8(__data_end)
+    brne    0b
     ; clear bss
-    ldi ZH, hi8(__bss_start)
-    ldi ZL, lo8(__bss_start)
-    rjmp 1f
-0:  st Z+, zero
-1:  cpi ZL, lo8(__bss_end)
-    brne 0b
-    cpi ZH, hi8(__bss_end)
-    brne 0b
+    ldi     ZH, hi8(__bss_start)
+    ldi     ZL, lo8(__bss_start)
+    rjmp    1f
+0:  st      Z+, zero
+1:  cpi     ZL, lo8(__bss_end)
+    brne    0b
+    cpi     ZH, hi8(__bss_end)
+    brne    0b
     ; ready to call C function
-    call main
-0:  rjmp 0b
+    call    main
+0:  rjmp    0b
 
 .global __null_handler
 __null_handler:
-0:  rjmp 0b
+0:  rjmp    0b
 
 .global _exit
 _exit:
-0:  rjmp 0b
+0:  rjmp    0b
 
 .global __interrupts_enable
 __interrupts_enable:
