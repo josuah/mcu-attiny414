@@ -38,7 +38,7 @@ __vectors:
     rjmp __null_handler              ; 0x0A: TCA0_CMP0
     rjmp __null_handler              ; 0x0B: TCA0_CMP1
     rjmp __null_handler              ; 0x0C: TCA0_CMP2
-    rjmp __null_handler              ; 0x0D: TCB0_INT
+    rjmp __vector_tcb0_int           ; 0x0D: TCB0_INT
     rjmp __null_handler              ; 0x0E: TCD0_OVF
     rjmp __null_handler              ; 0x0F: TCD0_TRIG
     rjmp __null_handler              ; 0x10: AC0_AC
@@ -54,6 +54,7 @@ __vectors:
 
 .interrupt adc0_resrdy
 .interrupt usart0_dre
+.interrupt tcb0_int
 
 .section .text
 

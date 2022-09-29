@@ -9,6 +9,10 @@ typedef struct {
 #define CLKCTRL_MCLKCTRLA_CLKOUT        (0x01u << 7)
 #define CLKCTRL_MCLKCTRLA_CLKSEL_Msk    (0x03u << 0)
 #define CLKCTRL_MCLKCTRLA_CLKSEL_Pos              0
+#define CLKCTRL_MCLKCTRLA_CLKSEL_OSC20M (0x00u << 0)
+#define CLKCTRL_MCLKCTRLA_CLKSEL_OSCULP32K (0x01u << 0)
+#define CLKCTRL_MCLKCTRLA_CLKSEL_XOSC32K (0x02u << 0)
+#define CLKCTRL_MCLKCTRLA_CLKSEL_EXTCLK (0x03u << 0)
     volatile uint8_t MCLKCTRLB;         // 0x01
 #define CLKCTRL_MCLKCTRLB_PDIV_Msk      (0x0Fu << 1)
 #define CLKCTRL_MCLKCTRLB_PDIV_Pos                1
@@ -30,5 +34,7 @@ typedef struct {
     volatile uint8_t RESERVED2[0x1B - 0x18];
     volatile uint8_t XOSC32KCTRLA;      // 0x1C
 } hw_clkctrl_t;
+
+void clkctrl_set_osculp32k(void);
 
 #endif

@@ -5,6 +5,7 @@
 #include "attiny_tcb.h"
 #include "attiny_adc.h"
 #include "attiny_tcb.h"
+#include "attiny_clkctrl.h"
 #include "put.h"
 
 /**
@@ -66,7 +67,7 @@
 /**
  * ADC result under which the case battery is too low for charging the Monocle.
  */
-#define LIM_VBAT_CASE_DISCHARGED        0x0049 // 0x0000=0V 0x03FF=VREF
+#define LIM_VBAT_CASE_DISCHARGED        0x0045 // 0x0000=0V 0x03FF=VREF
 
 /**
  * Deep sleep duration when the case battery is too low for charging the Monocle.
@@ -83,6 +84,9 @@
 #else
 #define LOG_DEBUG(...)
 #endif
+
+#define SET(reg, field, val) \
+    reg = (reg & ~field ## _Msk) | field ## _ ## val
 
 static uint32_t sleep_duration_ms;
 
@@ -140,17 +144,15 @@ void buck_turn_on(void)
     PORTA->DIRSET = 1 << PIN_BEN;
 }
 
-void hibernate_ms(uint32_t ms)
+void hibernate_ms(uint16_t ms)
 {
     LOG_DEBUG("zzz");
-    tcb0_wakeup_alarm(ms);
+    TCB0->CCMP = ms;
     for (volatile uint16_t i = 0; i < 0x0FFF; i++);
 }
 
 int main(void)
 {
-    PORTB->DIRSET = 1 << 2;
-
     // Input pins.
     PORTA->DIRCLR = 1 << PIN_VBAT_POS;
     PORTA->DIRCLR = 1 << PIN_ISENSE;
@@ -158,6 +160,9 @@ int main(void)
     // Output pins.
     PORTA->DIRSET = 1 << PIN_BEN;
     PORTA->DIRSET = 1 << PIN_MK_CHG_N;
+
+    // Change the clock to the ultra-low-power oscillator.
+    //clkctrl_set_osculp32k();
 
 #ifndef NDEBUG
     // UART used only for debug output
@@ -169,7 +174,7 @@ int main(void)
     adc0_init();
 
     // Timer-Counter B used for waking-up the device while sleeping.
-    //tcb0_init(); // no need to init
+    //tcb0_periodic_interrupt(0xFFFF);
 
     // Interrupts used by drivers of most peripherals above.
     __interrupts_enable();

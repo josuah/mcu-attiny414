@@ -15,7 +15,11 @@ typedef struct {
 #define ADC_CTRLB_SAMPNUM_Pos                     0
     volatile uint8_t CTRLC;             // 0x02
 #define ADC_CTRLC_SAMPCAP               (0x01u << 6)
-#define ADC_CTRLC_REFSEL                (0x03u << 4)
+#define ADC_CTRLC_REFSEL_Msk            (0x03u << 4)
+#define ADC_CTRLC_REFSEL_Pos                      4
+#define ADC_CTRLC_REFSEL_INTERNAL       (0x00u << 4)
+#define ADC_CTRLC_REFSEL_VDD            (0x01u << 4)
+#define ADC_CTRLC_REFSEL_VREFA          (0x02u << 4)
 #define ADC_CTRLC_PRESC                 (0x07u << 0)
     volatile uint8_t CTRLD;             // 0x03
 #define ADC_CTRLD_INITDLY_Msk           (0x07u << 5)
