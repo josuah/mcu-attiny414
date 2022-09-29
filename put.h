@@ -13,8 +13,18 @@
 #define fmtx(n) fmtint((char[17]){0}, 17, n, 16)
 #define fmtc(c) (char[2]){ c, '\0' }
 
+#define put(...) put_(__VA_ARGS__, NULL)
+
 /* equivalent to fputs(stdout, s); */
-#define put(s) PUT_WRITE((uint8_t *)s, strlen(s));
+static void put_(char *s, ...)
+{
+    va_list va;
+
+    va_start(va, s);
+    do {
+        PUT_WRITE((uint8_t *)s, strlen(s));
+    } while ((s = va_arg(va, char *)));
+}
 
 static char const *fmt_digits = "0123456789ABCDEF";
 

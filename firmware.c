@@ -4,6 +4,7 @@
 #include "attiny_port.h"
 #include "attiny_tcb.h"
 #include "attiny_adc.h"
+#include "attiny_tcb.h"
 #include "put.h"
 
 /**
@@ -12,12 +13,12 @@
  * This charging case acts as an external battery that charges the Monocle
  * while not in use. It helps with extending the battery life of the Monocle.
  *
- * The ATtiny202 microcontroller in the charging case has the purpose:
+ * The ATtiny202 microcontroller in the charging case has the role:
  *
- * - of keeping the buck converter turned off as long as there is no Monocle
+ * - Of keeping the buck converter turned off as long as there is no Monocle
  *   board present to avoid power leakage when not charging the Monocle.
  *
- * - to refuse to send power to the Monocle if there is not enough voltage left
+ * - To refuse to send power to the Monocle if there is not enough voltage left
  *   in the case battery.
  *
  * - Provide an LED indicator for the charge status.
@@ -60,12 +61,12 @@
  * ADC result above which a Monocle is considered present and drawing power
  * it uses
  */
-#define LIM_ISENSE_MONOCLE_CHARGING     0x0100 // 0x0000=0V 0x03FF=VBAT_POS
+#define LIM_ISENSE_MONOCLE_CHARGING     0x0048 // 0x0000=0V 0x03FF=VBAT_POS
 
 /**
  * ADC result under which the case battery is too low for charging the Monocle.
  */
-#define LIM_VBAT_CASE_DISCHARGED        0x0100 // 0x0000=0V 0x03FF=VREF
+#define LIM_VBAT_CASE_DISCHARGED        0x0049 // 0x0000=0V 0x03FF=VREF
 
 /**
  * Deep sleep duration when the case battery is too low for charging the Monocle.
@@ -78,22 +79,12 @@
 #define HIGH_BATTERY_SLEEP_MS           1000
 
 #ifndef NDEBUG
-#define LOG_DEBUG(msg) { put(msg); put("\r\n"); }
+#define LOG_DEBUG(...) { put(__VA_ARGS__, "\r\n"); }
 #else
-#define LOG_DEBUG(msg)
+#define LOG_DEBUG(...)
 #endif
 
 static uint32_t sleep_duration_ms;
-
-uint16_t read_adc_isense(void)
-{
-    uint16_t isense;
-
-    ADC0->MUXPOS = PIN_ISENSE;
-    isense = adc0_read();
-    LOG_DEBUG(fmtd(isense));
-    return isense;
-}
 
 /**
  * Read the ISENSE pin voltage and test if a monocle is drawing current.
@@ -105,13 +96,13 @@ bool is_monocle_charging(void)
 
     ADC0->MUXPOS = PIN_ISENSE;
     isense = adc0_read();
-    LOG_DEBUG(fmtd(isense));
+    LOG_DEBUG("isense=0x", fmtx(isense));
 
     if (isense > LIM_ISENSE_MONOCLE_CHARGING) {
-        LOG_DEBUG("isense=charging");
+        LOG_DEBUG("isense=", "monocle");
         return true;
     } else {
-        LOG_DEBUG("isense=none");
+        LOG_DEBUG("isense=", "none");
         return false;
     }
 }
@@ -126,33 +117,34 @@ bool is_case_battery_too_low(void)
 
     ADC0->MUXPOS = PIN_VBAT_POS;
     vbat = adc0_read();
-    LOG_DEBUG(fmtd(vbat));
+    LOG_DEBUG("vbat=0x", fmtx(vbat));
 
     if (vbat < LIM_VBAT_CASE_DISCHARGED) {
-        LOG_DEBUG("case=charging");
+        LOG_DEBUG("vbat=", "discharged");
         return true;
     } else {
-        LOG_DEBUG("case=charged");
+        LOG_DEBUG("vbat=", "charged");
         return false;
     }
 }
 
-void buck_turn_off()
+void buck_turn_off(void)
 {
-    LOG_DEBUG("buck=off");
+    LOG_DEBUG("buck=", "off");
     PORTA->DIRCLR = 1 << PIN_BEN;
 }
 
-void buck_turn_on()
+void buck_turn_on(void)
 {
-    LOG_DEBUG("buck=on");
+    LOG_DEBUG("buck=", "on");
     PORTA->DIRSET = 1 << PIN_BEN;
 }
 
 void hibernate_ms(uint32_t ms)
 {
-    LOG_DEBUG("hibernate");
-    for (volatile uint32_t i = 0; i < ms; i++);
+    LOG_DEBUG("zzz");
+    tcb0_wakeup_alarm(ms);
+    for (volatile uint16_t i = 0; i < 0x0FFF; i++);
 }
 
 int main(void)
@@ -164,12 +156,12 @@ int main(void)
     PORTA->DIRCLR = 1 << PIN_ISENSE;
 
     // Output pins.
-    PORTB->DIRSET = 0xFF; // 1 << PIN_USART_TX;
     PORTA->DIRSET = 1 << PIN_BEN;
     PORTA->DIRSET = 1 << PIN_MK_CHG_N;
 
 #ifndef NDEBUG
-    // UART used only for debug output, disabled with the usual -DNDEBUG.
+    // UART used only for debug output
+    PORTB->DIRSET = 1 << PIN_USART_TX;
     usart0_init();
 #endif
 
@@ -177,7 +169,7 @@ int main(void)
     adc0_init();
 
     // Timer-Counter B used for waking-up the device while sleeping.
-    //tcb0_init();
+    //tcb0_init(); // no need to init
 
     // Interrupts used by drivers of most peripherals above.
     __interrupts_enable();
@@ -190,11 +182,11 @@ int main(void)
             buck_turn_on();
             sleep_duration_ms = HIGH_BATTERY_SLEEP_MS;
             PORTA->DIRSET = 1 << PIN_BEN;
-            if (!is_monocle_charging())
+            if (!is_monocle_charging()) {
                 buck_turn_off();
+            }
         }
         hibernate_ms(sleep_duration_ms);
     }
-
     return 0;
 }

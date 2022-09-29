@@ -43,4 +43,6 @@ typedef struct {
     volatile uint16_t CCMP;             // 0x0C
 } hw_tcb_t;
 
+void tcb0_wakeup_alarm(uint16_t ticks);
+
 #endif

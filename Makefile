@@ -4,6 +4,7 @@ OBJ += firmware.o
 OBJ += attiny_crt.o
 OBJ += attiny_adc.o
 OBJ += attiny_usart.o
+OBJ += attiny_tcb.o
 LIBS += -lgcc -lc
 
 PYMCUPROG = pymcuprog -d attiny414 -t uart -u /dev/ttyUSB0
