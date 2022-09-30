@@ -20,11 +20,11 @@ typedef struct {
     volatile uint8_t MCLKLOCK;          // 0x02
 #define CLKCTRL_MCLKLOCK_LOCKEN         (0x01u << 0)
     volatile uint8_t MCLKSTATUS;        // 0x03
-#define CLKCTRL_MCLKLOCK_EXTS           (0x01u << 7)
-#define CLKCTRL_MCLKLOCK_XOSC32KS       (0x01u << 6)
-#define CLKCTRL_MCLKLOCK_OSC32KS        (0x01u << 5)
-#define CLKCTRL_MCLKLOCK_OSC20MS        (0x01u << 4)
-#define CLKCTRL_MCLKLOCK_SOSC           (0x01u << 0)
+#define CLKCTRL_MCLKSTATUS_EXTS           (0x01u << 7)
+#define CLKCTRL_MCLKSTATUS_XOSC32KS       (0x01u << 6)
+#define CLKCTRL_MCLKSTATUS_OSC32KS        (0x01u << 5)
+#define CLKCTRL_MCLKSTATUS_OSC20MS        (0x01u << 4)
+#define CLKCTRL_MCLKSTATUS_SOSC           (0x01u << 0)
     volatile uint8_t RESERVED0[0x0F - 0x03];
     volatile uint8_t OSC20MCTRLA;       // 0x10
     volatile uint8_t OSC20MCALIBA;      // 0x11

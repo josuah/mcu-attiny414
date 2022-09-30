@@ -10,6 +10,9 @@ typedef struct {
 #define TCB_CTRLA_SYNCUPD               (0x01u << 4)
 #define TCB_CTRLA_CLKSEL_Msk            (0x03u << 1)
 #define TCB_CTRLA_CLKSEL_Pos                      1
+#define TCB_CTRLA_CLKSEL_CLKDIV1        (0x00u << 1)
+#define TCB_CTRLA_CLKSEL_CLKDIV2        (0x01u << 1)
+#define TCB_CTRLA_CLKSEL_CLKTCA         (0x02u << 1)
 #define TCB_CTRLA_ENABLE                (0x01u << 0)
     volatile uint8_t CTRLB;             // 0x01
 #define TCB_CTRLB_ASYNC                 (0x01u << 6)

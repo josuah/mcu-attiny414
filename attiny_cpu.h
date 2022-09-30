@@ -1,5 +1,6 @@
 #ifndef ATTINY_CPU_H
 #define ATTINY_CPU_H
+#include <stdint.h>
 
 #define CPU ((hw_cpu_t *)0x0030)
 

@@ -21,9 +21,8 @@ static void put_(char *s, ...)
     va_list va;
 
     va_start(va, s);
-    do {
-        PUT_WRITE((uint8_t *)s, strlen(s));
-    } while ((s = va_arg(va, char *)));
+    do PUT_WRITE((uint8_t *)s, strlen(s));
+    while ((s = va_arg(va, char *)));
 }
 
 static char const *fmt_digits = "0123456789ABCDEF";

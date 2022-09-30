@@ -32,7 +32,7 @@ __vectors:
     rjmp __null_handler              ; 0x04: PORTB_PORT
     rjmp __null_handler              ; 0x05: PORTC_PORT
     rjmp __null_handler              ; 0x06: RTC_CNT
-    rjmp __null_handler              ; 0x07: RTC_PIT
+    rjmp __vector_rtc_pit            ; 0x07: RTC_PIT
     rjmp __null_handler              ; 0x08: TCA0_OVF
     rjmp __null_handler              ; 0x09: TCA0_HUNF
     rjmp __null_handler              ; 0x0A: TCA0_CMP0
@@ -55,6 +55,7 @@ __vectors:
 .interrupt adc0_resrdy
 .interrupt usart0_dre
 .interrupt tcb0_int
+.interrupt rtc_pit
 
 .section .text
 
@@ -102,4 +103,9 @@ __interrupts_enable:
 .global __interrupts_disable
 __interrupts_disable:
     cli
+    ret
+
+.global __sleep
+__sleep:
+    sleep
     ret

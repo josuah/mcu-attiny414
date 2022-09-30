@@ -6,6 +6,8 @@ OBJ += attiny_adc.o
 OBJ += attiny_usart.o
 OBJ += attiny_tcb.o
 OBJ += attiny_clkctrl.o
+OBJ += attiny_rtc.o
+OBJ += attiny_slpctrl.o
 LIBS += -lgcc -lc
 
 PYMCUPROG = pymcuprog -d attiny414 -t uart -u /dev/ttyUSB0

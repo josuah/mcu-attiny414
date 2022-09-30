@@ -2,10 +2,10 @@
 #include "attiny_crt.h"
 #include "attiny_usart.h"
 #include "attiny_port.h"
-#include "attiny_tcb.h"
 #include "attiny_adc.h"
-#include "attiny_tcb.h"
+#include "attiny_rtc.h"
 #include "attiny_clkctrl.h"
+#include "attiny_slpctrl.h"
 #include "put.h"
 
 /**
@@ -31,7 +31,7 @@
  * USART log debug output, disabled on production builds.
  * Digital output, active low.
  */
-#define PIN_USART_TX                    1 // PORTB
+#define PIN_USART_TX                    2 // PORTB
 
 /**
  * Buck converter enable pin. Up when current is measured via ISENSE.
@@ -84,11 +84,6 @@
 #else
 #define LOG_DEBUG(...)
 #endif
-
-#define SET(reg, field, val) \
-    reg = (reg & ~field ## _Msk) | field ## _ ## val
-
-static uint32_t sleep_duration_ms;
 
 /**
  * Read the ISENSE pin voltage and test if a monocle is drawing current.
@@ -144,11 +139,10 @@ void buck_turn_on(void)
     PORTA->DIRSET = 1 << PIN_BEN;
 }
 
-void hibernate_ms(uint16_t ms)
+void hibernate(void)
 {
     LOG_DEBUG("zzz");
-    TCB0->CCMP = ms;
-    for (volatile uint16_t i = 0; i < 0x0FFF; i++);
+    slpctrl_standby();
 }
 
 int main(void)
@@ -162,7 +156,7 @@ int main(void)
     PORTA->DIRSET = 1 << PIN_MK_CHG_N;
 
     // Change the clock to the ultra-low-power oscillator.
-    //clkctrl_set_osculp32k();
+    clkctrl_set_osculp32k();
 
 #ifndef NDEBUG
     // UART used only for debug output
@@ -174,7 +168,7 @@ int main(void)
     adc0_init();
 
     // Timer-Counter B used for waking-up the device while sleeping.
-    //tcb0_periodic_interrupt(0xFFFF);
+    rtc_init_periodic_interrupt();
 
     // Interrupts used by drivers of most peripherals above.
     __interrupts_enable();
@@ -182,16 +176,14 @@ int main(void)
     for (;;) {
         if (is_case_battery_too_low()) {
             buck_turn_off();
-            sleep_duration_ms = LOW_BATTERY_SLEEP_MS;
         } else {
             buck_turn_on();
-            sleep_duration_ms = HIGH_BATTERY_SLEEP_MS;
             PORTA->DIRSET = 1 << PIN_BEN;
             if (!is_monocle_charging()) {
                 buck_turn_off();
             }
         }
-        hibernate_ms(sleep_duration_ms);
+        hibernate();
     }
     return 0;
 }
