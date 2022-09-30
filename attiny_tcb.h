@@ -46,6 +46,7 @@ typedef struct {
     volatile uint16_t CCMP;             // 0x0C
 } hw_tcb_t;
 
+void __interrupt_tcb0_int(void);
 void tcb0_periodic_interrupt(uint16_t ticks);
 
 #endif

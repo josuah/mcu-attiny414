@@ -31,7 +31,7 @@ static char const *fmt_digits = "0123456789ABCDEF";
  * Format a signed integer i64 at the end of s of size sz using base b.
  * @return The first printable byte of `s`.
  */
-static char *fmtint(char *s, size_t sz, int16_t i64, uint8_t b)
+static char *fmtint(char *s, size_t sz, int64_t i64, uint8_t b)
 {
     assert(b <= strlen(fmt_digits));
     s += sz;
@@ -40,7 +40,7 @@ static char *fmtint(char *s, size_t sz, int16_t i64, uint8_t b)
         *--s = fmt_digits[0];
         return s;
     }
-    for (uint16_t u64 = i64 > 0 ? i64 : -i64; u64 > 0; u64 /= b)
+    for (uint64_t u64 = (unsigned)(i64 > 0 ? i64 : -i64); u64 > 0; u64 /= b)
         *--s = fmt_digits[u64 % b];
     if (i64 < 0)
         *--s = '-';

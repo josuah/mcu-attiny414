@@ -60,10 +60,10 @@ typedef struct {
     volatile uint8_t RXPLCTRL;          // 0x0E
 } hw_usart_t;
 
-#define USART_BAUD_HZ(hz) ((float)(3333333 * 64 / (16 * (float)hz)) + 0.5)
+#define USART_BAUD_HZ(hz) (uint16_t)((float)(3333333 * 64 / (16 * (float)hz)) + 0.5)
 
+void __interrupt_usart0_dre(void);
 void usart0_write(uint8_t const *buf, size_t len);
 void usart0_init(void);
-
 
 #endif

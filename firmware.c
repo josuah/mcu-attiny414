@@ -89,7 +89,7 @@
  * Read the ISENSE pin voltage and test if a monocle is drawing current.
  * @return True if the monocle is detected.
  */
-bool is_monocle_charging(void)
+static bool is_monocle_charging(void)
 {
     uint16_t isense;
 
@@ -110,7 +110,7 @@ bool is_monocle_charging(void)
  * Read the VBAT current and test if there is enough battery.
  * @return True if enough battery for charging.
  */
-bool is_case_battery_too_low(void)
+static bool is_case_battery_too_low(void)
 {
     uint16_t vbat;
 
@@ -127,22 +127,22 @@ bool is_case_battery_too_low(void)
     }
 }
 
-void buck_turn_off(void)
+static void buck_turn_off(void)
 {
     LOG_DEBUG("buck=", "off");
     PORTA->DIRCLR = 1 << PIN_BEN;
 }
 
-void buck_turn_on(void)
+static void buck_turn_on(void)
 {
     LOG_DEBUG("buck=", "on");
     PORTA->DIRSET = 1 << PIN_BEN;
 }
 
-void hibernate(void)
+static void hibernate(void)
 {
     LOG_DEBUG("zzz");
-    slpctrl_standby();
+    slpctrl_powerdown();
 }
 
 int main(void)

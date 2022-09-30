@@ -15,5 +15,6 @@ typedef struct {
 } hw_slpctrl_t;
 
 void slpctrl_standby(void);
+void slpctrl_powerdown(void);
 
 #endif

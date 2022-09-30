@@ -58,6 +58,7 @@ typedef struct {
 #define ADC_CALIB_DUTYCYC               (0x01u << 0)
 } hw_adc_t;
 
+void __interrupt_adc0_resrdy(void);
 void adc0_init(void);
 uint16_t adc0_read(void);
 

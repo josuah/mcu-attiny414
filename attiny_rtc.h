@@ -67,6 +67,7 @@ typedef struct {
 #define RTC_PITDBGCTRL_DBGRUN           (0x01u << 0)
 } hw_rtc_t;
 
+void __interrupt_rtc_pit(void);
 void rtc_init_periodic_interrupt(void);
 
 #endif

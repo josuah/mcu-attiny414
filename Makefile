@@ -1,4 +1,4 @@
-CFLAGS += -Wall -Wextra -std=c99
+CFLAGS += -Wall -Wextra -Wconversion -Wmissing-prototypes -std=c99 -pedantic
 
 OBJ += firmware.o
 OBJ += attiny_crt.o
