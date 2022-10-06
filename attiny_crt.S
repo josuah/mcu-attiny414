@@ -1,3 +1,4 @@
+#define temp        r0
 #define zero        r1
 #define SPL         0x3D
 #define SPH         0x3E
@@ -5,86 +6,105 @@
 #define CCP         0x34
 #define CCP_IOREG   0xD8
 
-.macro .interrupt name
-.global __vector_\name
-__vector_\name:
+.macro .interrupt onoff, vector, interrupt
+.if \onoff == 1
+.global \vector
+\vector:
     push    r1
     in      r1, SREG
     push    zero
     clr     zero
     push r18 $ push r19 $ push r20 $ push r21 $ push r22 $ push r23
     push r24 $ push r25 $ push r26 $ push r27 $ push r30 $ push r31
-    call    __interrupt_\name
+    call    \interrupt
     pop r31 $ pop r30 $ pop r27 $ pop r26 $ pop r25 $ pop r24
     pop r23 $ pop r22 $ pop r21 $ pop r20 $ pop r19 $ pop r18
     pop     r1
     out     SREG, r1
     pop     r1
     reti
+.else
+.weakref \vector, __null_handler
+.endif
 .endm
 
 .section .vectors
 
 .global __vectors
 __vectors:
-    rjmp __reset_handler             ; 0x00:
-    rjmp __null_handler              ; 0x01: CRCSCAN_NMI
-    rjmp __null_handler              ; 0x02: BOD_VLM
-    rjmp __null_handler              ; 0x03: PORTA_PORT
-    rjmp __null_handler              ; 0x04: PORTB_PORT
-    rjmp __null_handler              ; 0x05: PORTC_PORT
-    rjmp __null_handler              ; 0x06: RTC_CNT
-    rjmp __vector_rtc_pit            ; 0x07: RTC_PIT
-    rjmp __null_handler              ; 0x08: TCA0_OVF
-    rjmp __null_handler              ; 0x09: TCA0_HUNF
-    rjmp __null_handler              ; 0x0A: TCA0_CMP0
-    rjmp __null_handler              ; 0x0B: TCA0_CMP1
-    rjmp __null_handler              ; 0x0C: TCA0_CMP2
-    rjmp __vector_tcb0_int           ; 0x0D: TCB0_INT
-    rjmp __null_handler              ; 0x0E: TCD0_OVF
-    rjmp __null_handler              ; 0x0F: TCD0_TRIG
-    rjmp __null_handler              ; 0x10: AC0_AC
-    rjmp __vector_adc0_resrdy        ; 0x11: ADC0_RESRDY
-    rjmp __null_handler              ; 0x12: ADC0_WCOMP
-    rjmp __null_handler              ; 0x13: TWI0_TWIS
-    rjmp __null_handler              ; 0x14: TWI0_TWIM
-    rjmp __null_handler              ; 0x15: SPI0_INT
-    rjmp __null_handler              ; 0x16: USART0_RXC
-#ifndef NDEBUG
-    rjmp __vector_usart0_dre         ; 0x17: USART0_DRE
-    rjmp __vector_usart0_txc         ; 0x18: USART0_TXC
-#else
-    rjmp __null_handler              ; 0x17: USART0_DRE
-    rjmp __null_handler              ; 0x18: USART0_TXC
-#endif
-    rjmp __null_handler              ; 0x19: NVMCTRL_EE
+    rjmp __reset_handler                ; 0x00
+    rjmp __vector_1                     ; 0x01
+    rjmp __vector_2                     ; 0x02
+    rjmp __vector_3                     ; 0x03
+    rjmp __vector_4                     ; 0x04
+    rjmp __vector_5                     ; 0x05
+    rjmp __vector_6                     ; 0x06
+    rjmp __vector_7                     ; 0x07
+    rjmp __vector_8                     ; 0x08
+    rjmp __vector_9                     ; 0x09
+    rjmp __vector_10                    ; 0x0A
+    rjmp __vector_11                    ; 0x0B
+    rjmp __vector_12                    ; 0x0C
+    rjmp __vector_13                    ; 0x0D
+    rjmp __null_handler                 ; 0x0E
+    rjmp __null_handler                 ; 0x0F
+    rjmp __vector_14                    ; 0x10
+    rjmp __vector_15                    ; 0x11
+    rjmp __vector_16                    ; 0x12
+    rjmp __vector_17                    ; 0x13
+    rjmp __vector_18                    ; 0x14
+    rjmp __vector_19                    ; 0x15
+    rjmp __vector_20                    ; 0x16
+    rjmp __vector_21                    ; 0x17
+    rjmp __vector_22                    ; 0x18
+    rjmp __vector_23                    ; 0x17
+    rjmp __vector_24                    ; 0x18
+    rjmp __vector_25                    ; 0x19
 
-.interrupt adc0_resrdy
-.interrupt rtc_pit
-.interrupt tcb0_int
-#ifndef NDEBUG
-.interrupt usart0_dre
-.interrupt usart0_txc
-#endif
+.interrupt 0, __vector_1,  __interrupt_crcscan_nmi
+.interrupt 0, __vector_2,  __interrupt_bod_vlm
+.interrupt 0, __vector_3,  __interrupt_porta_port
+.interrupt 0, __vector_4,  __interrupt_portb_port
+.interrupt 0, __vector_5,  __interrupt_portc_port
+.interrupt 0, __vector_6,  __interrupt_rtc_cnt
+.interrupt 0, __vector_7,  __interrupt_rtc_pit
+.interrupt 0, __vector_8,  __interrupt_tca0_ovf
+.interrupt 0, __vector_9,  __interrupt_tca0_hunf
+.interrupt 0, __vector_10, __interrupt_tca0_cmp0
+.interrupt 0, __vector_11, __interrupt_tca0_cmp1
+.interrupt 0, __vector_12, __interrupt_tca0_cmp2
+.interrupt 0, __vector_13, __interrupt_tcb0_int
+.interrupt 0, __vector_14, __interrupt_tcd0_ovf
+.interrupt 0, __vector_15, __interrupt_tcd0_trig
+.interrupt 0, __vector_16, __interrupt_ac0_ac
+.interrupt 0, __vector_17, __interrupt_adc0_resrdy
+.interrupt 0, __vector_18, __interrupt_adc0_wcomp
+.interrupt 0, __vector_19, __interrupt_twi0_twis
+.interrupt 0, __vector_20, __interrupt_twi0_twim
+.interrupt 0, __vector_21, __interrupt_spi0_int
+.interrupt 0, __vector_22, __interrupt_usart0_rxc
+.interrupt 0, __vector_23, __interrupt_usart0_dre
+.interrupt 0, __vector_24, __interrupt_usart0_txc
+.interrupt 0, __vector_25, __interrupt_nvmctrl_ee
 
 .section .text
 
 .global __reset_handler
 __reset_handler:
     clr     zero
-    ; copy data
+__copy_data:
     ldi     ZL, lo8(__data_load_start)
     ldi     ZH, hi8(__data_load_start)
     ldi     XL, lo8(__data_start)
     ldi     XH, hi8(__data_start)
     rjmp    1f
-0:  lpm     r0, Z+
-    st      X+, r0
+0:  lpm     temp, Z+
+    st      X+, temp
 1:  cpi     XL, lo8(__data_end)
     brne    0b
     cpi     XH, hi8(__data_end)
     brne    0b
-    ; clear bss
+__clear_bss:
     ldi     ZH, hi8(__bss_start)
     ldi     ZL, lo8(__bss_start)
     rjmp    1f
@@ -93,7 +113,7 @@ __reset_handler:
     brne    0b
     cpi     ZH, hi8(__bss_end)
     brne    0b
-    ; ready to call C function
+__call_main:
     call    main
 0:  rjmp    0b
 
@@ -101,25 +121,10 @@ __reset_handler:
 __null_handler:
 0:  rjmp    0b
 
-.global _exit
-_exit:
-0:  rjmp    0b
-
-.global __interrupts_on
-__interrupts_on:
-    sei
-    ret
-
-.global __interrupts_off
-__interrupts_off:
+.global __exit
+__exit:
     cli
-    ret
-
-.global __sleep_until_interrupt
-__sleep_until_interrupt:
-    sei         ; interrupts will be effectively be disabled on next clock
-    sleep       ; interrupts enabled but the sleep instruction takes precedence
-    ret
+0:  rjmp    0b
 
 ; r24   (uint8_t *) Pointer to the register to write to.
 ; r22   (uint8_t)   Value to insert

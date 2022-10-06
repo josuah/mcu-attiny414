@@ -6,7 +6,8 @@ void slpctrl_standby(void)
     SLPCTRL->CTRLA = 0
      | SLPCTRL_CTRLA_SMODE_STANDBY
      | SLPCTRL_CTRLA_SEN;
-    __sleep_until_interrupt();
+    __asm__("sei");
+    __asm__("sleep");
 }
 
 void slpctrl_powerdown(void)
@@ -14,7 +15,8 @@ void slpctrl_powerdown(void)
     SLPCTRL->CTRLA = 0
      | SLPCTRL_CTRLA_SMODE_PDOWN
      | SLPCTRL_CTRLA_SEN;
-    __sleep_until_interrupt();
+    __asm__("sei");
+    __asm__("sleep");
 }
 
 void slpctrl_idle(void)
@@ -22,27 +24,28 @@ void slpctrl_idle(void)
     SLPCTRL->CTRLA = 0
      | SLPCTRL_CTRLA_SMODE_IDLE
      | SLPCTRL_CTRLA_SEN;
-    __sleep_until_interrupt();
+    __asm__("sei");
+    __asm__("sleep");
 }
 
 void slpctrl_standby_until(volatile bool *flag)
 {
     for (;;) {
-        __interrupts_off();
+        __asm__("cli");
         if (*flag)
             break;
         slpctrl_standby();
     }
-    __interrupts_on();
+    __asm__("sei");
 }
 
 void slpctrl_idle_until(volatile bool *flag)
 {
     for (;;) {
-        __interrupts_off();
+        __asm__("cli");
         if (*flag)
             break;
         slpctrl_idle();
     }
-    __interrupts_on();
+    __asm__("sei");
 }
