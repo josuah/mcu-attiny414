@@ -36,5 +36,6 @@ typedef struct {
 } hw_clkctrl_t;
 
 void clkctrl_set_osculp32k(void);
+void clkctrl_set_osc20m(void);
 
 #endif

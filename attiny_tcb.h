@@ -47,6 +47,9 @@ typedef struct {
 } hw_tcb_t;
 
 void __interrupt_tcb0_int(void);
-void tcb0_periodic_interrupt(uint16_t ticks);
+void tcb0_periodic_interrupt(void);
+void tcb0_pwm(void);
+void tcb0_off(void);
+
 
 #endif

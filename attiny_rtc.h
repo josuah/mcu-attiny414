@@ -8,14 +8,14 @@
 typedef struct {
     volatile uint8_t CTRLA;             // 0x00
 #define RTC_CTRLA_RUNSTDBY              (0x01u << 7)
-#define RTC_CTRLA_PRESCALER_Msk         (0x0Fu << 3)
 #define RTC_CTRLA_PRESCALER_Pos                   3
+#define RTC_CTRLA_PRESCALER_Msk         (0x0Fu << 3)
 #define RTC_CTRLA_RTCEN                 (0x01u << 0)
     volatile uint8_t STATUS;            // 0x01
-#define RTC_CTRLA_CMPBUSY               (0x01u << 3)
-#define RTC_CTRLA_PERBUSY               (0x01u << 2)
-#define RTC_CTRLA_CNTBUSY               (0x01u << 1)
-#define RTC_CTRLA_CTRLABUSY             (0x01u << 0)
+#define RTC_STATUS_CMPBUSY              (0x01u << 3)
+#define RTC_STATUS_PERBUSY              (0x01u << 2)
+#define RTC_STATUS_CNTBUSY              (0x01u << 1)
+#define RTC_STATUS_CTRLBUSY             (0x01u << 0)
     volatile uint8_t INTCTRL;           // 0x02
 #define RTC_INTCTRL_CMP                 (0x01u << 1)
 #define RTC_INTCTRL_OVF                 (0x01u << 0)
@@ -27,8 +27,8 @@ typedef struct {
 #define RTC_DBGCTLR_DBGRUN              (0x01u << 0)
     volatile uint8_t RESERVED0[0x07 - 0x06];
     volatile uint8_t CLKSEL;            // 0x07
-#define RTC_CLKSEL_CLKSEL_Msk           (0x03u << 0)
 #define RTC_CLKSEL_CLKSEL_Pos                     0
+#define RTC_CLKSEL_CLKSEL_Msk           (0x03u << 0)
 #define RTC_CLKSEL_CLKSEL_INT32K        (0x00u << 0)
 #define RTC_CLKSEL_CLKSEL_INT1K         (0x01u << 0)
 #define RTC_CLKSEL_CLKSEL_TOSC32K       (0x02u << 0)
@@ -38,8 +38,8 @@ typedef struct {
     volatile uint16_t CMP;              // 0x0C
     volatile uint8_t RESERVED1[0x10 - 0x0E];
     volatile uint8_t PITCTRLA;          // 0x10
-#define RTC_PITCTRLA_PERIOD_Msk         (0x0Fu << 3)
 #define RTC_PITCTRLA_PERIOD_Pos                   3
+#define RTC_PITCTRLA_PERIOD_Msk         (0x0Fu << 3)
 #define RTC_PITCTRLA_PERIOD_OFF         (0x00u << 3)
 #define RTC_PITCTRLA_PERIOD_CYC4        (0x01u << 3)
 #define RTC_PITCTRLA_PERIOD_CYC8        (0x02u << 3)

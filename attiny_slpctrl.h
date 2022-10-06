@@ -1,6 +1,7 @@
 #ifndef ATTINY_SLPCTRL_H
 #define ATTINY_SLPCTRL_H
 #include <stdint.h>
+#include <stdbool.h>
 
 #define SLPCTRL ((hw_slpctrl_t *)0x0050)
 
@@ -16,5 +17,8 @@ typedef struct {
 
 void slpctrl_standby(void);
 void slpctrl_powerdown(void);
+void slpctrl_idle(void);
+void slpctrl_standby_until(volatile bool *flag);
+void slpctrl_idle_until(volatile bool *flag);
 
 #endif

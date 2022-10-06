@@ -2,6 +2,8 @@
 #define SPL         0x3D
 #define SPH         0x3E
 #define SREG        0x3F
+#define CCP         0x34
+#define CCP_IOREG   0xD8
 
 .macro .interrupt name
 .global __vector_\name
@@ -48,14 +50,22 @@ __vectors:
     rjmp __null_handler              ; 0x14: TWI0_TWIM
     rjmp __null_handler              ; 0x15: SPI0_INT
     rjmp __null_handler              ; 0x16: USART0_RXC
+#ifndef NDEBUG
     rjmp __vector_usart0_dre         ; 0x17: USART0_DRE
+    rjmp __vector_usart0_txc         ; 0x18: USART0_TXC
+#else
+    rjmp __null_handler              ; 0x17: USART0_DRE
     rjmp __null_handler              ; 0x18: USART0_TXC
+#endif
     rjmp __null_handler              ; 0x19: NVMCTRL_EE
 
 .interrupt adc0_resrdy
-.interrupt usart0_dre
-.interrupt tcb0_int
 .interrupt rtc_pit
+.interrupt tcb0_int
+#ifndef NDEBUG
+.interrupt usart0_dre
+.interrupt usart0_txc
+#endif
 
 .section .text
 
@@ -95,17 +105,28 @@ __null_handler:
 _exit:
 0:  rjmp    0b
 
-.global __interrupts_enable
-__interrupts_enable:
+.global __interrupts_on
+__interrupts_on:
     sei
     ret
 
-.global __interrupts_disable
-__interrupts_disable:
+.global __interrupts_off
+__interrupts_off:
     cli
     ret
 
-.global __sleep
-__sleep:
-    sleep
+.global __sleep_until_interrupt
+__sleep_until_interrupt:
+    sei         ; interrupts will be effectively be disabled on next clock
+    sleep       ; interrupts enabled but the sleep instruction takes precedence
+    ret
+
+; r24   (uint8_t *) Pointer to the register to write to.
+; r22   (uint8_t)   Value to insert
+.global __protected_write
+__protected_write:
+    movw    Z, r24
+    ldi     r18, CCP_IOREG
+    out     CCP, r18
+    st      Z, r22
     ret

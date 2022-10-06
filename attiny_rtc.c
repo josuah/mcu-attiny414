@@ -5,14 +5,15 @@
 
 void __interrupt_rtc_pit(void)
 {
-    PORTB->DIRSET = 1 << 0;
-    PORTB->OUT ^= 1 << 0;
     RTC->PITINTFLAGS = RTC_PITINTFLAGS_PI;
 }
 
 void rtc_init_periodic_interrupt(void)
 {
-    // Use the ultra-low-power clock.
+    // The RTC can be used internally at startup.
+    while (RTC->PITSTATUS & RTC_PITSTATUS_CTRLBUSY);
+    while (RTC->STATUS & RTC_STATUS_CTRLBUSY);
+    // Use the slowest mode of the ultra-low-power clock.
     RTC->CLKSEL = RTC_CLKSEL_CLKSEL_INT1K;
     // Run in standby mode.
     RTC->CTRLA = 0

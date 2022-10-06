@@ -60,6 +60,6 @@ typedef struct {
 
 void __interrupt_adc0_resrdy(void);
 void adc0_init(void);
-uint16_t adc0_read(void);
+uint16_t adc0_read(uint8_t pin);
 
 #endif

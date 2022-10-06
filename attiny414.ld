@@ -1,5 +1,5 @@
 MEMORY {
-	FLASH (rx)	: ORIGIN = 0x0000, LENGTH = 4K
+	FLASH (rx)	: ORIGIN = 0x0000, LENGTH = 4K /* TODO: is it not 0x8000 ? */
 	SRAM (rwx)	: ORIGIN = 0x803F00, LENGTH = 256
 }
 

@@ -2,6 +2,8 @@
 #define ATTINY_TCA_H
 #include <stdint.h>
 
+#define TCA0 ((hw_tca_t *)0x0A00)
+
 typedef struct {
     volatile uint8_t CTRLA;             // 0x00
     volatile uint8_t CTRLB;             // 0x01
@@ -36,6 +38,5 @@ typedef struct {
     volatile uint8_t CMPBSET;           // 0x2C
     volatile uint8_t CMPBCLR;           // 0x2E
 } hw_tca_t;
-#define TCA0 ((hw_tca_t *)0x0A00)
 
 #endif
