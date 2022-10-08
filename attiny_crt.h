@@ -3,6 +3,5 @@
 #include <stdint.h>
 
 void __protected_write(volatile uint8_t *reg, uint8_t val);
-void __exit(int unused);
 
 #endif

@@ -14,8 +14,7 @@ void __interrupt_adc0_resrdy(void)
 void adc0_init(void)
 {
     ADC0->INTCTRL |= ADC_INTCTRL_RESRDY;
-    ADC0->CTRLA = 0
-     | ADC_CTRLA_ENABLE;
+    ADC0->CTRLA = ADC_CTRLA_ENABLE;
 }
 
 uint16_t adc0_read(uint8_t pin)

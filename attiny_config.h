@@ -13,19 +13,23 @@
 #define CLK_MAIN_HZ                     CLK_OSC20M_HZ
 #define CLK_PER_HZ                      (CLK_MAIN_HZ / CLK_PER_DIV)
 
-// USART
-
 /* Compile-time fixed baudrate configuration for the UART0. */
-#define USART0_BAUD_HZ                  9600
+#define CLK_USART0_HZ                   9600
 
 // RTC
 
 /* Number of cycles between two interrupts are triggered. */
-#define RTC_CYCLES_BEFORE_INTERRUPT     RTC_PITCTRLA_PERIOD_CYC1024
+#define RTC_CONF_CYCLES_BEFORE_IRQ      RTC_PITCTRLA_PERIOD_CYC1024
 
 // VREF
 
 /* Reference voltage used by the ADC. When the measured VIN=VREF then the result ADCRES=ADCMAX. */
-#define VREF_VOLTAGE_ADC0               VREF_CTRLA_ADC0REFSEL_4V3
+#define VREF_CONF_ADC0_VOLT             VREF_CTRLA_ADC0REFSEL_4V3
+
+// SPI
+
+#define SPI_CONF_MASTER_SLAVE           SPI_CTRLA_MASTER
+#define SPI_CONF_DIV                    SPI_CTRLA_PRESC_DIV4
+#define SPI_CONF_MODE                   SPI_CTRLB_MODE_POSEDGE_SAMPLE
 
 #endif

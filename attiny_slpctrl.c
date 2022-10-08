@@ -3,27 +3,21 @@
 
 void slpctrl_standby(void)
 {
-    SLPCTRL->CTRLA = 0
-     | SLPCTRL_CTRLA_SMODE_STANDBY
-     | SLPCTRL_CTRLA_SEN;
+    SLPCTRL->CTRLA = SLPCTRL_CTRLA_SEN | SLPCTRL_CTRLA_SMODE_STANDBY;
     __asm__("sei");
     __asm__("sleep");
 }
 
 void slpctrl_powerdown(void)
 {
-    SLPCTRL->CTRLA = 0
-     | SLPCTRL_CTRLA_SMODE_PDOWN
-     | SLPCTRL_CTRLA_SEN;
+    SLPCTRL->CTRLA = SLPCTRL_CTRLA_SEN | SLPCTRL_CTRLA_SMODE_PDOWN;
     __asm__("sei");
     __asm__("sleep");
 }
 
 void slpctrl_idle(void)
 {
-    SLPCTRL->CTRLA = 0
-     | SLPCTRL_CTRLA_SMODE_IDLE
-     | SLPCTRL_CTRLA_SEN;
+    SLPCTRL->CTRLA = SLPCTRL_CTRLA_SEN | SLPCTRL_CTRLA_SMODE_IDLE;
     __asm__("sei");
     __asm__("sleep");
 }

@@ -4,5 +4,5 @@
 void vref_init_adc0(void)
 {
     VREF->CTRLA &= (uint8_t) ~VREF_CTRLA_ADC0REFSEL_Msk;
-    VREF->CTRLA |= VREF_VOLTAGE_ADC0;
+    VREF->CTRLA |= VREF_CONF_ADC0_VOLT;
 }

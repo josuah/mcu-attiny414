@@ -81,7 +81,7 @@ __vectors:
 .interrupt 0, __vector_18, __interrupt_adc0_wcomp
 .interrupt 0, __vector_19, __interrupt_twi0_twis
 .interrupt 0, __vector_20, __interrupt_twi0_twim
-.interrupt 0, __vector_21, __interrupt_spi0_int
+.interrupt 1, __vector_21, __interrupt_spi0_int
 .interrupt 0, __vector_22, __interrupt_usart0_rxc
 .interrupt 0, __vector_23, __interrupt_usart0_dre
 .interrupt 0, __vector_24, __interrupt_usart0_txc
@@ -99,7 +99,7 @@ __copy_data:
     ldi     XH, hi8(__data_start)
     rjmp    1f
 0:  lpm     temp, Z+
-    st      X+, temp
+    st      X+, r0
 1:  cpi     XL, lo8(__data_end)
     brne    0b
     cpi     XH, hi8(__data_end)
@@ -119,11 +119,6 @@ __call_main:
 
 .global __null_handler
 __null_handler:
-0:  rjmp    0b
-
-.global __exit
-__exit:
-    cli
 0:  rjmp    0b
 
 ; r24   (uint8_t *) Pointer to the register to write to.

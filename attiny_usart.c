@@ -24,11 +24,9 @@ void __interrupt_usart0_txc(void)
 
 void usart0_init(void)
 {
-    USART0->BAUD = USART_BAUD_HZ(USART0_BAUD_HZ);
-    USART0->CTRLA = 0
-     | USART_CTRLA_TXCIE;
-    USART0->CTRLB = 0
-     | USART_CTRLB_TXEN;
+    USART0->BAUD = USART_BAUD_HZ(CLK_USART0_HZ);
+    USART0->CTRLA = USART_CTRLA_TXCIE;
+    USART0->CTRLB = USART_CTRLB_TXEN;
 }
 
 void usart0_write(uint8_t const *buf, size_t sz)
