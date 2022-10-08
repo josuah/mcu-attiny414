@@ -8,7 +8,6 @@
 
 .macro .interrupt onoff, vector, interrupt
 .if \onoff == 1
-.global \vector
 \vector:
     push    r1
     in      r1, SREG
@@ -30,7 +29,6 @@
 
 .section .vectors
 
-.global __vectors
 __vectors:
     rjmp __reset_handler                ; 0x00
     rjmp __vector_1                     ; 0x01
@@ -46,20 +44,18 @@ __vectors:
     rjmp __vector_11                    ; 0x0B
     rjmp __vector_12                    ; 0x0C
     rjmp __vector_13                    ; 0x0D
-    rjmp __null_handler                 ; 0x0E
-    rjmp __null_handler                 ; 0x0F
-    rjmp __vector_14                    ; 0x10
-    rjmp __vector_15                    ; 0x11
-    rjmp __vector_16                    ; 0x12
-    rjmp __vector_17                    ; 0x13
-    rjmp __vector_18                    ; 0x14
-    rjmp __vector_19                    ; 0x15
-    rjmp __vector_20                    ; 0x16
-    rjmp __vector_21                    ; 0x17
-    rjmp __vector_22                    ; 0x18
+    rjmp __vector_14                    ; 0x0E
+    rjmp __vector_15                    ; 0x0F
+    rjmp __vector_16                    ; 0x10
+    rjmp __vector_17                    ; 0x11
+    rjmp __vector_18                    ; 0x12
+    rjmp __vector_19                    ; 0x13
+    rjmp __vector_20                    ; 0x14
+    rjmp __vector_21                    ; 0x15
+    rjmp __vector_22                    ; 0x16
     rjmp __vector_23                    ; 0x17
     rjmp __vector_24                    ; 0x18
-    rjmp __vector_25                    ; 0x19
+    rjmp __vector_25                    ; 0x17
 
 .interrupt 0, __vector_1,  __interrupt_crcscan_nmi
 .interrupt 0, __vector_2,  __interrupt_bod_vlm
@@ -117,7 +113,6 @@ __call_main:
     call    main
 0:  rjmp    0b
 
-.global __null_handler
 __null_handler:
 0:  rjmp    0b
 

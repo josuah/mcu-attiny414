@@ -28,8 +28,7 @@
 
 // SPI
 
-#define SPI_CONF_MASTER_SLAVE           SPI_CTRLA_MASTER
-#define SPI_CONF_DIV                    SPI_CTRLA_PRESC_DIV4
+/** Combined Clock Phase (CPHA) and Clock Polarity (CPOL) config. */
 #define SPI_CONF_MODE                   SPI_CTRLB_MODE_POSEDGE_SAMPLE
 
 #endif

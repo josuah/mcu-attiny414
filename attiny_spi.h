@@ -45,8 +45,7 @@ typedef struct {
 
 void __interrupt_spi0_int(void);
 void spi0_init(void);
-void spi0_read_write(uint8_t *rbuf, size_t rsz, uint8_t const *wbuf, size_t wsz);
-void spi0_read(uint8_t *rbuf, size_t rsz, uint8_t wval);
+uint8_t spi0_rxtx_byte(uint8_t wval);
 void spi0_write(uint8_t const *wbuf, size_t wsz);
 
 #endif

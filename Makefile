@@ -16,7 +16,7 @@ OBJ += attiny_slpctrl.o
 OBJ += attiny_tcb.o
 OBJ += attiny_usart.o
 OBJ += attiny_vref.o
-OBJ += attiny_spi.o
+OBJ += attiny_spim.o
 OBJ += put.o
 LIBS += -lgcc -lc
 
